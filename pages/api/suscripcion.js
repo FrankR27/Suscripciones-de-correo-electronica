@@ -28,9 +28,15 @@ export default async (req, res) => {
 };
 
 const obtenerSuscripciones = async (req, res) => {
+  const { id, accion } = req.query;
   try {
-    const subs = await Suscripcion.find();
-    return res.status(200).json(subs);
+    if (accion === "full") {
+      const subs = await Suscripcion.find();
+      return res.status(200).json(subs);
+    } else if (accion === "simple") {
+      const sub = await Suscripcion.findById({ _id: id });
+      return res.status(200).json(sub);
+    }
   } catch (error) {
     console.error(error.message);
   }
