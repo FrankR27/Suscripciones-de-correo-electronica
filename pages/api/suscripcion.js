@@ -23,7 +23,7 @@ export default async (req, res) => {
       break;
 
     default:
-      return `El metodo ${req.method} no esta permitido`;
+      return `El metodo ${req.method} no está permitido`;
   }
 };
 
@@ -40,13 +40,18 @@ const crearSuscripcion = async (req, res) => {
   const { nombre, correo } = req.body;
 
   try {
+    const existeSuscripcion = await Suscripcion.findOne({ correo });
+
+    if (existeSuscripcion) {
+      return res.status(200).send("Usted ya está suscripto");
+    }
     const newSub = await new Suscripcion({
       nombre,
       correo,
     });
     newSub.save();
 
-    return res.status(201).send("Suscripcion exitosa");
+    return res.status(201).send("Suscripción exitosa");
   } catch (error) {
     console.error(error.message);
   }
@@ -57,7 +62,7 @@ const eliminarSuscripcion = async (req, res) => {
 
   try {
     await Suscripcion.findByIdAndDelete(id);
-    return res.status(200).send("Suscripcion eliminada correctamente");
+    return res.status(200).send("Suscripción eliminada correctamente");
   } catch (error) {
     console.error(error.message);
   }
@@ -68,6 +73,6 @@ const actualizarSuscripcion = async (req, res) => {
 
   try {
     await Suscripcion.findByIdAndUpdate(_id, { nombre, correo }, { new: true });
-    return res.status(200).send("Su suscripcion ha sido modificada");
+    return res.status(200).send("Su suscripción ha sido modificada");
   } catch (error) {}
 };
